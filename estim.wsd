@@ -1,0 +1,96 @@
+@startuml
+
+class Juego{
+    - nombre: String 
+    - reqCPU: String
+    - reqRAM_GB: Integer 
+    - reqAlmacenamiento_GB: Integer
+    - genero: Genero
+    - precio_pesos: Float
+}
+
+class Genero{
+    - nombre: String
+    - atributos: List<AtributoRespondido>
+}
+
+class Atributo{
+    - nombre: String
+    - esObligatorio: Boolean
+}
+
+class AtributoRespondido{
+    - atributo: Atributo
+    - valor: String
+}
+
+class DLC{
+    - nombre: String
+    - precio_pesos: Float
+    - juegoBase: Juego
+}
+
+class Compra{
+    - fecha: Date
+    - juegoComprado: Juego
+    - dlcComprado: DLC
+    - jugador: Jugador
+    - precioTotal_pesos: Float
+    - medioPago: MedioPago
+}
+
+Enum MedioPago{
+    TARJETA_CREDITO,
+    TARJETA_DEBITO,
+    PAYPAL,
+    TRANSFERENCIA_BANCARIA
+}
+
+class Jugador{
+    - nombreUsuario: String
+    - email: String
+    - juegosComprados: List<Juego>
+    - dlcsComprados: List<DLC>
+    - conocidos: List<Jugador>
+    - prestamos: List<Prestamo>
+    - esSospechosoDeFraude: Boolean
+}
+
+class Prestamo{
+    - juegoPrestado: Juego
+    - dlcPrestado: DLC
+    - jugadorPrestamista: Jugador
+    - jugadorPrestatario: Jugador
+    - fechaPrestamo: Date
+    - fechaDevolucion: Date
+}
+
+interface detectorDeFraude{
+    + esSospechosoDeFraude(jugador: Jugador): Boolean
+}
+
+class prestamoAMismoUsuario implements detectorDeFraude{
+    + esSospechosoDeFraude(jugador: Jugador): Boolean
+}
+class prestamosExcesivos implements detectorDeFraude{
+    + esSospechosoDeFraude(jugador: Jugador): Boolean
+}
+class prestamoLargo implements detectorDeFraude{
+    + esSospechosoDeFraude(jugador: Jugador): Boolean
+}
+
+Juego --> Genero
+Genero --> AtributoRespondido
+AtributoRespondido --> Atributo
+Compra --> Juego
+Compra --> DLC
+Compra --> Jugador
+Compra --> MedioPago
+Jugador --> Prestamo
+Prestamo --> Juego
+Prestamo --> DLC
+Jugador <.. detectorDeFraude
+
+
+
+@enduml
