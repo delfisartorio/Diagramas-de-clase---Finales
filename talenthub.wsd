@@ -1,0 +1,120 @@
+@startuml talenthub.wsd
+
+class Organizacion{
+    -nombre: String
+    -razonSocial: RazonSocial
+    -industria: Industria
+    -descripcion: String
+    -logo: String
+    - redesSociales: List<RedSocial>
+}
+
+enum RazonSocial{
+    SRL
+    SA
+    SPA
+    AUTONOMO
+}
+
+class Industria{
+    -nombreIndustria: String
+    -descripcion: String
+}
+
+class CreadorContenido{
+    -nombre: String
+    - apellido: String 
+    - nroDoc: String 
+    - nacionalidad: String
+    - fechaNacimiento: Date
+    - email: String
+    - telefono: String
+    - redesSociales: List<RedSocial>
+    - portafolio: List<CampaniaPrevia>
+}
+
+class RedSocial{
+    -plataforma: Plataforma
+    -urlPerfil: String
+}
+
+enum Plataforma{
+    YOUTUBE
+    INSTAGRAM
+    TIKTOK
+    TWITTER
+    FACEBOOK
+}
+
+class CampaniaPrevia{
+    -nombreCampania: String
+    -descripcion: String
+    -fechaPublicacion: Date
+    -redesSociales: List<Plataforma>
+    -tipoDeVideo: TipoDeVideo
+}
+
+class TipoDeVideo{
+    -nombreTipo: String
+    -descripcion: String
+}
+
+class Campania{
+    -nombreCampania: String
+    -cantidadVideos: Integer
+    -descripcion: String
+    -fechaInicio: Date
+    -fechaFin: Date
+    -producto: String
+    -organizacion: Organizacion
+    -fotos: List<String>
+    -tiposDeVideo: List<TipoDeVideo>
+    -plataformas: List<Plataforma>
+    -finalizada: Boolean
+    -criterios: List<CriterioSeleccion>
+    -postulaciones: List<Postulacion>
+    -ganador: creadorContenido
+}
+
+Interface CriterioSeleccion{
+    +calcularPuntaje(postulacion: Postulacion): Float
+}
+
+class masCampaniasPrevias implements CriterioSeleccion{
+    -peso: Float
+    +calcularPuntaje(postulacion: Postulacion): Float
+}
+
+class pesoRedSocial implements CriterioSeleccion{
+    -peso: Float
+    +calcularPuntaje(postulacion: Postulacion): Float
+}
+
+class cantidadCampanias implements CriterioSeleccion{
+    -peso: Float
+    -numCampanias: Integer
+    +calcularPuntaje(postulacion: Postulacion): Float
+}
+
+class Postulacion{
+    -creadorContenido: CreadorContenido
+    -puntajeTotal: Float
+    -fechaPostulacion: LocalDateTime
+}
+
+Organizacion --> RazonSocial
+Organizacion --> Industria
+Organizacion -->"*" RedSocial
+CreadorContenido -->"*" RedSocial
+CreadorContenido -->"*" CampaniaPrevia
+CampaniaPrevia --> TipoDeVideo
+Campania --> Organizacion
+Campania -->CreadorContenido
+Campania -->"*" TipoDeVideo
+Campania -->"*" Plataforma
+Campania -->"*" CriterioSeleccion
+Campania -->"*" Postulacion
+Postulacion --> CreadorContenido
+RedSocial --> Plataforma
+
+@enduml
